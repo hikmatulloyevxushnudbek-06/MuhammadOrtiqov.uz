@@ -1,4 +1,3 @@
-/* ── Gallery Section ─────────────────────────────────────── */
 .gallery {
   width: 100%;
   margin-top: 60px;
@@ -21,7 +20,6 @@
   line-height: 1.6;
 }
 
-/* ── Carousel CSS variable for responsive visible count ─── */
 :root {
   --carousel-visible: 5;
 }
@@ -41,21 +39,18 @@
   :root { --carousel-visible: 1; }
 }
 
-/* ── Viewport: clips the overflowing slides ──────────────── */
 .carousel-viewport {
   margin-top: 40px;
   overflow: hidden;
   width: 100%;
 }
 
-/* ── Track: all slides in one row, no wrap ───────────────── */
 .carousel-track {
   display: flex;
   will-change: transform;
   user-select: none;
 }
 
-/* ── Single slide ────────────────────────────────────────── */
 .carousel-slide {
   flex-shrink: 0;
   padding: 0 10px;
@@ -71,15 +66,6 @@
   pointer-events: none;
 }
 
-/* @media (max-width: 992px) {
-  .carousel-slide img { height: 280px; }
-}
-
-@media (max-width: 600px) {
-  .carousel-slide img { height: 320px; }
-} */
-
-/* ── "See all" button ────────────────────────────────────── */
 .gallery-btn-box {
   text-align: center;
   margin-top: 36px;
@@ -101,7 +87,6 @@
   transform: translateY(-3px);
 }
 
-/* ── Fullscreen Modal ────────────────────────────────────── */
 .modal {
   position: fixed;
   inset: 0;

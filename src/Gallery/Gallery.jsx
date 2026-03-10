@@ -82,8 +82,7 @@ const images = [
   { name: "Akramov Aslbek", src: logo37 },
 ];
 
-// Infinite-loop: clone several items at start and end of the track
-const CLONES = 5; // number of clones at each side
+const CLONES = 5;
 const extended = [
   ...images.slice(-CLONES),
   ...images,
@@ -91,12 +90,10 @@ const extended = [
 ];
 
 function Gallery() {
-  // real index inside `extended` array; starts at CLONES to skip the leading clones
   const [trackIndex, setTrackIndex] = useState(CLONES);
   const [animated, setAnimated] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
-  // drag/swipe state
   const [pointerDown, setPointerDown] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [dragDelta, setDragDelta] = useState(0);
@@ -105,7 +102,6 @@ function Gallery() {
   const trackRef = useRef(null);
   const AUTOPLAY_MS = 3500;
 
-  // After CSS transition ends, silently jump back if we hit a clone region
   const handleTransitionEnd = useCallback(() => {
     setTrackIndex((idx) => {
       if (idx >= images.length + CLONES) {
@@ -120,7 +116,6 @@ function Gallery() {
     });
   }, []);
 
-  // Re-enable animation after a silent jump (one rAF later so browser sees the position change)
   useEffect(() => {
     if (!animated) {
       const raf = requestAnimationFrame(() => setAnimated(true));
@@ -128,9 +123,6 @@ function Gallery() {
     }
   }, [animated]);
 
-  // ------------------------------------------------------------------
-  // Autoplay
-  // ------------------------------------------------------------------
   const startAutoplay = useCallback(() => {
     autoRef.current = setInterval(() => {
       setTrackIndex((prev) => prev + 1);
@@ -147,9 +139,6 @@ function Gallery() {
     return () => stopAutoplay();
   }, [startAutoplay, stopAutoplay]);
 
-  // ------------------------------------------------------------------
-  // Drag / Swipe handlers
-  // ------------------------------------------------------------------
   const onDragStart = (clientX) => {
     stopAutoplay();
     setPointerDown(true);
@@ -176,7 +165,6 @@ function Gallery() {
     startAutoplay();
   };
 
-  // Mouse
   const onMouseDown = (e) => { e.preventDefault(); onDragStart(e.clientX); };
   const onMouseMove = (e) => onDragMove(e.clientX);
   const onMouseUp   = () => onDragEnd();
@@ -187,9 +175,6 @@ function Gallery() {
   const onTouchMove  = (e) => onDragMove(e.touches[0].clientX);
   const onTouchEnd   = () => onDragEnd();
 
-  // ------------------------------------------------------------------
-  // Modal
-  // ------------------------------------------------------------------
   const openModal = (src, name) => {
     const idx = images.findIndex((img) => img.src === src);
     if (idx !== -1) setSelectedIndex(idx);
@@ -198,11 +183,6 @@ function Gallery() {
   const nextModal    = () => setSelectedIndex((p) => (p + 1) % images.length);
   const prevModal    = () => setSelectedIndex((p) => (p - 1 + images.length) % images.length);
 
-  // ------------------------------------------------------------------
-  // Render
-  // ------------------------------------------------------------------
-  // Each slide occupies (100 / VISIBLE)% of the track wrapper.
-  // We show 3 on desktop, 2 on tablet, 1 on mobile via CSS variable.
   const slideWidthPercent = `calc(100% / var(--carousel-visible))`;
   const translateX = `calc(-${trackIndex} * 100% / var(--carousel-visible) + ${pointerDown ? dragDelta : 0}px)`;
 
@@ -215,7 +195,6 @@ function Gallery() {
           ularning sertifikatlari va mukofotlari
         </p>
 
-        {/* ── Carousel ─────────────────────────────────────────── */}
         <div className="carousel-viewport">
           <div
             className="carousel-track"
@@ -263,7 +242,6 @@ function Gallery() {
         </div>
       </div>
 
-      {/* ── Fullscreen Modal ──────────────────────────────────── */}
       {selectedIndex !== null && (
         <div className="modal" onClick={closeModal}>
           <button className="prev" onClick={(e) => { e.stopPropagation(); prevModal(); }} aria-label="Oldingi">‹</button>

@@ -28,12 +28,10 @@ function GalleryAll() {
     }
   }, []);
 
-  // Reset to first page when searching
   useEffect(() => {
     setCurrentPage(1);
   }, [search]);
 
-  // Scroll to top when page changes
   useEffect(() => {
     if (titleRef.current) {
       titleRef.current.scrollIntoView({
@@ -47,7 +45,6 @@ function GalleryAll() {
     img.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredImages.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -56,7 +53,6 @@ function GalleryAll() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const openModal = (indexInCurrentPage) => {
-    // We need the index in filteredImages to keep modal navigation working correctly
     const indexInFiltered = indexOfFirstItem + indexInCurrentPage;
     setSelectedIndex(indexInFiltered);
   };
