@@ -53,7 +53,7 @@ function Header() {
             onClick={() => goHomeAndScroll("header")}
           >
             <FaGraduationCap className="graduation" />
-            <h1>Muhammad Ortiqov</h1>
+            <h1>Muhammad Ortiqov o‘quv markazi</h1>
           </Link>
 
           <ul className={`nav-links ${menuOpen ? "active" : ""}`}>

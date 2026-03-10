@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import "./Gallery.css";
 import { Link } from "react-router-dom";
 
+// Rasmlar importi (O'zgarmadi)
 import logo from "../assets/Baxtiyor Jalolov.jpg";
 import logo1 from "../assets/Aminov Temurbek.jpg";
 import logo2 from "../assets/Aminov Tohirbek.jpg";
@@ -41,45 +42,46 @@ import logo35 from "../assets/Muxtorov Kamronbek.jpg";
 import logo36 from "../assets/To'ramurodov Ulug'bek.jpg";
 import logo37 from "../assets/Akramov Aslbek.jpg";
 
+// SEO uchun boyitilgan rasmlar massivi
 const images = [
-  { name: "Baxtiyor Jalolov", src: logo },
-  { name: "Aminov Temurbek", src: logo1 },
-  { name: "Aminov Tohirbek", src: logo2 },
-  { name: "Ilyosov Madiyor", src: logo3 },
-  { name: "Yusupova Feruza", src: logo4 },
-  { name: "Ro'zimurodov Quvonchbek", src: logo5 },
-  { name: "Boboqulova Nazira", src: logo6 },
-  { name: "Sirojov Siroj", src: logo7 },
-  { name: "Badriddinov Dilshod", src: logo8 },
-  { name: "Kamolov Davron", src: logo9 },
-  { name: "Asrorov Asrorbek", src: logo10 },
-  { name: "To'xtayev Asilbek", src: logo11 },
-  { name: "Normurodov Aslam", src: logo12 },
-  { name: "Muhiddinova Madinabonu", src: logo13 },
-  { name: "Qahramonov Azizjon", src: logo14 },
-  { name: "Salimov Lazizjon", src: logo15 },
-  { name: "Shavkatova Shaxinabonu", src: logo16 },
-  { name: "Tursunov Diyorbek", src: logo17 },
-  { name: "G'aybullayeva Saodat", src: logo18 },
-  { name: "Aslonov Anvar", src: logo19 },
-  { name: "Sharipov Rashid", src: logo20 },
-  { name: "Murtazoyev Og'abek", src: logo21 },
-  { name: "Qahramonova Oynur", src: logo22 },
-  { name: "Abduraupova Soliha", src: logo23 },
-  { name: "Baxtiyorova Hokima", src: logo24 },
-  { name: "Mirzayev Dilshod", src: logo25 },
-  { name: "Komilov Akmal", src: logo26 },
-  { name: "Bo'ronova Charos", src: logo27 },
-  { name: "Fayzullayev Idillo", src: logo28 },
-  { name: "Xudoyqulov Suxrob", src: logo29 },
-  { name: "Qahramonov Husniddin", src: logo30 },
-  { name: "Bozorova Sevara", src: logo31 },
-  { name: "Mo'minova Zebiniso", src: logo32 },
-  { name: "Shodmonov Shohruh", src: logo33 },
-  { name: "O'ktamov Amirxon", src: logo34 },
-  { name: "Muxtorov Kamronbek", src: logo35 },
-  { name: "To'ramurodov Ulug'bek", src: logo36 },
-  { name: "Akramov Aslbek", src: logo37 },
+  { name: "Baxtiyor Jalolov - Muhammad Ortiqov o'quvchisi matematika sertifikati", src: logo },
+  { name: "Aminov Temurbek - Matematika milliy sertifikat natijasi", src: logo1 },
+  { name: "Aminov Tohirbek - Ortiqov Muhammad o'quv markazi yutug'i", src: logo2 },
+  { name: "Ilyosov Madiyor - Matematika bo'yicha yuqori natija", src: logo3 },
+  { name: "Yusupova Feruza - Muhammad Ortiqov darslari natijasi", src: logo4 },
+  { name: "Ro'zimurodov Quvonchbek - Matematika imtihon natijasi", src: logo5 },
+  { name: "Boboqulova Nazira - Matematika sertifikati", src: logo6 },
+  { name: "Sirojov Siroj - Muhammad Ortiqov matematika kursi", src: logo7 },
+  { name: "Badriddinov Dilshod - Matematika fanidan yutuq", src: logo8 },
+  { name: "Kamolov Davron - Ortiqov Muhammad matematika markazi", src: logo9 },
+  { name: "Asrorov Asrorbek - Matematika milliy sertifikat", src: logo10 },
+  { name: "To'xtayev Asilbek - Matematika fanidan natija", src: logo11 },
+  { name: "Normurodov Aslam - Muhammad Ortiqov o'quvchisi", src: logo12 },
+  { name: "Muhiddinova Madinabonu - Matematika sertifikati natija", src: logo13 },
+  { name: "Qahramonov Azizjon - Matematika fanidan sertifikat", src: logo14 },
+  { name: "Salimov Lazizjon - Muhammad Ortiqov shogirdi", src: logo15 },
+  { name: "Shavkatova Shaxinabonu - Matematika yutuqlari", src: logo16 },
+  { name: "Tursunov Diyorbek - Matematika sertifikat egalari", src: logo17 },
+  { name: "G'aybullayeva Saodat - Muhammad Ortiqov darslari", src: logo18 },
+  { name: "Aslonov Anvar - Matematika fanidan bilim darajasi", src: logo19 },
+  { name: "Sharipov Rashid - Muhammad Ortiqov o'quv markazi", src: logo20 },
+  { name: "Murtazoyev Og'abek - Matematika natija 2026", src: logo21 },
+  { name: "Qahramonova Oynur - Matematika milliy sertifikat", src: logo22 },
+  { name: "Abduraupova Soliha - Muhammad Ortiqov shogirdi natijasi", src: logo23 },
+  { name: "Baxtiyorova Hokima - Matematika darslaridagi yutuq", src: logo24 },
+  { name: "Mirzayev Dilshod - Matematika sertifikati Muhammad Ortiqov", src: logo25 },
+  { name: "Komilov Akmal - Matematika o'quv kursi natijasi", src: logo26 },
+  { name: "Bo'ronova Charos - Muhammad Ortiqov o'quvchisi yutug'i", src: logo27 },
+  { name: "Fayzullayev Idillo - Matematika fanidan yuqori ball", src: logo28 },
+  { name: "Xudoyqulov Suxrob - Matematika milliy sertifikat", src: logo29 },
+  { name: "Qahramonov Husniddin - Muhammad Ortiqov o'quv markazi", src: logo30 },
+  { name: "Bozorova Sevara - Matematika fanidan bilim", src: logo31 },
+  { name: "Mo'minova Zebiniso - Muhammad Ortiqov matematika kursi", src: logo32 },
+  { name: "Shodmonov Shohruh - Matematika natijasi", src: logo33 },
+  { name: "O'ktamov Amirxon - Muhammad Ortiqov shogirdi", src: logo34 },
+  { name: "Muxtorov Kamronbek - Matematika fanidan yutuq", src: logo35 },
+  { name: "To'ramurodov Ulug'bek - Matematika sertifikati", src: logo36 },
+  { name: "Akramov Aslbek - Muhammad Ortiqov o'quvchisi", src: logo37 },
 ];
 
 const CLONES = 5;
@@ -170,7 +172,6 @@ function Gallery() {
   const onMouseUp   = () => onDragEnd();
   const onMouseLeave = () => { if (pointerDown) onDragEnd(); };
 
-  // Touch
   const onTouchStart = (e) => onDragStart(e.touches[0].clientX);
   const onTouchMove  = (e) => onDragMove(e.touches[0].clientX);
   const onTouchEnd   = () => onDragEnd();
@@ -187,15 +188,16 @@ function Gallery() {
   const translateX = `calc(-${trackIndex} * 100% / var(--carousel-visible) + ${pointerDown ? dragDelta : 0}px)`;
 
   return (
-    <section className="gallery" id="sertfikatlar">
+    <section className="gallery" id="gallery" aria-labelledby="gallery-title">
       <div className="container">
-        <h2 className="gallery-title">O'quvchilar yutuqlari va sertifikatlari</h2>
+        {/* SEO uchun sarlavha */}
+        <h2 id="gallery-title" className="gallery-title">Muhammad Ortiqov o‘quvchilari yutuqlari va sertifikatlari</h2>
         <p className="gallery-text">
-          O'quvchilarimiz doimiy ravishda yuqori natijalarga erishmoqda. Mana
-          ularning sertifikatlari va mukofotlari
+          O'quvchilarimiz matematika fanidan milliy sertifikat va xalqaro olimpiadalarda 
+          doimiy ravishda yuqori natijalarga erishmoqda. Muhammad Ortiqov o'quv markazi yutuqlari.
         </p>
 
-        <div className="carousel-viewport">
+        <div className="carousel-viewport" role="region" aria-label="Natijalar karuseli">
           <div
             className="carousel-track"
             ref={trackRef}
@@ -226,9 +228,10 @@ function Gallery() {
               >
                 <img
                   src={img.src}
-                  alt={img.name}
+                  alt={img.name} // SEO KALIT SO'ZLAR SHU YERDA
+                  title={img.name}
                   draggable="false"
-                  loading="lazy"
+                  loading="lazy" // Tezlik uchun (Google SEO reytingiga ta'sir qiladi)
                 />
               </div>
             ))}
@@ -236,22 +239,26 @@ function Gallery() {
         </div>
 
         <div className="gallery-btn-box">
-          <Link to="/gallery-all" className="gallery-more-btn">
+          <Link 
+            to="/gallery-all" 
+            className="gallery-more-btn"
+            title="Barcha matematika sertifikatlarini ko'rish"
+          >
             Barchasini ko'rish
           </Link>
         </div>
       </div>
 
       {selectedIndex !== null && (
-        <div className="modal" onClick={closeModal}>
-          <button className="prev" onClick={(e) => { e.stopPropagation(); prevModal(); }} aria-label="Oldingi">‹</button>
+        <div className="modal" onClick={closeModal} role="dialog" aria-modal="true">
+          <button className="prev" onClick={(e) => { e.stopPropagation(); prevModal(); }} aria-label="Oldingi rasm">‹</button>
           <img
             src={images[selectedIndex].src}
-            alt={images[selectedIndex].name}
+            alt={`${images[selectedIndex].name} - Muhammad Ortiqov`}
             className="modal-img"
             onClick={(e) => e.stopPropagation()}
           />
-          <button className="next" onClick={(e) => { e.stopPropagation(); nextModal(); }} aria-label="Keyingi">›</button>
+          <button className="next" onClick={(e) => { e.stopPropagation(); nextModal(); }} aria-label="Keyingi rasm">›</button>
           <button className="modal-close" onClick={closeModal} aria-label="Yopish">×</button>
         </div>
       )}

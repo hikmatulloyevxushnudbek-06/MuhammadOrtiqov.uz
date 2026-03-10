@@ -44,7 +44,7 @@ function Hero() {
             <div className="hero-animation">
               <div className="big-circle"></div>
               <div className="dashed-circle" onClick={openModal}>
-                <img src={Gurparasm} alt="Hero" />
+                <img src={Gurparasm} alt="Ortiqov Muhammad matematika ustozi" />
               </div>
               <div className="formula f1">f(x) = ax² + bx + c</div>
               <div className="formula f2">∫₀¹ x² dx = ⅓</div>

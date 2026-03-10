@@ -12,6 +12,7 @@
 .gallery-text {
   text-align: center;
   font-size: 18px;
+  font-weight: 500;
   color: var(--black);
   margin-top: 16px;
   max-width: 700px;
@@ -29,14 +30,37 @@
 
 @media (max-width: 992px) {
   :root { --carousel-visible: 3; }
+  .gallery-title {
+    font-size: 32px;
+  }
+  .gallery-text {
+    font-size: 18px;
+  }
 }
 
 @media (max-width: 768px) {
   :root { --carousel-visible: 2; }
+  .gallery-title {
+    font-size: 28px;
+  }
+  .gallery-text {
+    font-size: 16px;
+    margin-top: 12px;
+  }
 }
 
 @media (max-width: 500px) {
   :root { --carousel-visible: 1; }
+  .gallery-title {
+    font-size: 22px; 
+  }
+  .gallery-text {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .gallery {
+    margin-top: 40px; 
+  }
 }
 
 .carousel-viewport {
