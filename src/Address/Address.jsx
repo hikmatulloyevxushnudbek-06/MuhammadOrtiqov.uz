@@ -5,7 +5,7 @@ import { PiTelegramLogo } from "react-icons/pi";
 import { FiPhone } from "react-icons/fi";
 function Address() {
   return (
-    <div className="contact" id="aloqa">
+    <div className="contact" id="address">
       <div className="container">
         <h2 className="contact-title">Biz bilan bog'lanish</h2>
         <div className="contact-line"></div>
