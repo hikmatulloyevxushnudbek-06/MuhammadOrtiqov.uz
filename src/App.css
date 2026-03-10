@@ -1,0 +1,36 @@
+:root {
+  --blue: #366bef;
+  --white: white;
+  --blueewhite: #c6d8fa;
+  --black: #827878;
+  --buttonhover: #4d7cf3;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  padding-top: 70px;
+  background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='20' y='40' font-size='22' fill='%23cfd6e4' opacity='0.25'%3E%CF%80%3C/text%3E%3Ctext x='120' y='80' font-size='24' fill='%23cfd6e4' opacity='0.25'%3E%E2%88%91%3C/text%3E%3Ctext x='60' y='150' font-size='22' fill='%23cfd6e4' opacity='0.25'%3E%E2%88%AB%3C/text%3E%3C/svg%3E");
+   background-repeat: repeat;
+   background-color: #f5f6f8;
+   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.container {
+  width: 90%;
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}

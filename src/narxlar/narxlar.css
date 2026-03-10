@@ -1,0 +1,73 @@
+#narxlar{
+    margin: 100px 0px;
+}
+
+.narx-title{
+    text-align: center;
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.narx-text{
+    text-align: center;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--black);
+    margin-top: 20px;
+}
+
+@media (max-width:1200px){
+
+.narx-title{
+    font-size:36px;
+}
+
+.narx-text{
+    font-size:19px;
+}
+
+}
+
+@media (max-width:992px){
+
+.narx-title{
+    font-size:32px;
+}
+
+.narx-text{
+    font-size:18px;
+}
+
+}
+
+@media (max-width:768px){
+
+#narxlar{
+    margin:80px 0px;
+}
+
+.narx-title{
+    font-size:28px;
+}
+
+.narx-text{
+    font-size:17px;
+}
+
+}
+
+@media (max-width:480px){
+
+#narxlar{
+    margin:60px 0px;
+}
+
+.narx-title{
+    font-size:24px;
+}
+
+.narx-text{
+    font-size:15px;
+}
+
+}
