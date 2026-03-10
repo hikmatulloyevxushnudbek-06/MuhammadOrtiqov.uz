@@ -6,6 +6,8 @@ import { FiSearch } from "react-icons/fi";
 function GalleryAll() {
   const [search, setSearch] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   const titleRef = useRef(null);
 
@@ -26,11 +28,39 @@ function GalleryAll() {
     }
   }, []);
 
+  // Reset to first page when searching
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
+
+  // Scroll to top when page changes
+  useEffect(() => {
+    if (titleRef.current) {
+      titleRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [currentPage]);
+
   const filteredImages = images.filter((img) =>
     img.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const openModal = (index) => setSelectedIndex(index);
+  // Pagination logic
+  const totalPages = Math.ceil(filteredImages.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentImages = filteredImages.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const openModal = (indexInCurrentPage) => {
+    // We need the index in filteredImages to keep modal navigation working correctly
+    const indexInFiltered = indexOfFirstItem + indexInCurrentPage;
+    setSelectedIndex(indexInFiltered);
+  };
+
   const closeModal = () => setSelectedIndex(null);
 
   const nextImage = (e) => {
@@ -73,7 +103,7 @@ function GalleryAll() {
         </div>
 
         <div className="gallery-grid">
-          {filteredImages.map((img, index) => (
+          {currentImages.map((img, index) => (
             <img
               key={index}
               src={img.src}
@@ -84,6 +114,36 @@ function GalleryAll() {
             />
           ))}
         </div>
+
+        {filteredImages.length > itemsPerPage && (
+          <div className="pagination">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="pagination-btn"
+            >
+              &laquo;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => paginate(i + 1)}
+                className={`pagination-btn ${
+                  currentPage === i + 1 ? "active" : ""
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="pagination-btn"
+            >
+              &raquo;
+            </button>
+          </div>
+        )}
 
         {filteredImages.length === 0 && search && (
           <p className="no-results">Hech qanday sertifikat topilmadi :(</p>

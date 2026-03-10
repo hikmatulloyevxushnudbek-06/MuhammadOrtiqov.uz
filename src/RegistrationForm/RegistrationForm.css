@@ -5,9 +5,12 @@
   background: var(--white);
   border-radius: 16px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.form-container-title{
+.form-container-title {
   font-size: 40px;
   font-weight: 500;
   text-align: center;
@@ -31,12 +34,6 @@
   line-height: 1.5;
 }
 
-.registration-form {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
 .form-group {
   display: flex;
   flex-direction: column;
@@ -57,15 +54,112 @@ textarea {
   border: 1px solid #d0d5dd;
   border-radius: 8px;
   outline: none;
-  transition: border-color 0.5s;
+  transition: all 0.3s ease;
+  background-color: var(--white);
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: #0066ff;
-  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+/* ── Custom Dropdown ────────────────────────────────────── */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
 }
+
+.dropdown-selected {
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background-color: var(--white);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.custom-dropdown.placeholder-active .dropdown-selected {
+  color: #667085;
+}
+
+.dropdown-selected:hover {
+  border-color: #b0b5bd;
+}
+
+.custom-dropdown .dropdown-selected:focus-within,
+.custom-dropdown:focus-within .dropdown-selected {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(54, 107, 239, 0.15);
+}
+
+.dropdown-arrow {
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23827878' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23366bef' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+.dropdown-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #eaecf0;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  padding: 6px;
+  list-style: none;
+  animation: dropdownFade 0.2s ease-out;
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-options li {
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--black);
+  transition: background 0.2s;
+}
+
+.dropdown-options li:hover {
+  background-color: #f9fafb;
+  color: var(--blue);
+}
+
+/* ── Media Queries for Dropdown ────────────────────────── */
+@media (max-width: 1200px) {
+  .dropdown-selected {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dropdown-selected {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dropdown-selected {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+}
+
 
 textarea {
   resize: vertical;
@@ -172,6 +266,12 @@ textarea {
     padding: 12px 14px;
   }
 
+  select {
+    background-position: right 12px center;
+    background-size: 14px;
+    padding-right: 36px;
+  }
+
   .submit-btn {
     font-size: 15px;
     padding: 14px;
@@ -192,6 +292,12 @@ textarea {
   textarea {
     font-size: 13px;
     padding: 10px 12px;
+  }
+
+  select {
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 32px;
   }
 
   .submit-btn {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import "./Gallery.css";
 import { Link } from "react-router-dom";
 
@@ -40,9 +40,6 @@ import logo34 from "../assets/O'ktamov Amirxon.jpg";
 import logo35 from "../assets/Muxtorov Kamronbek.jpg";
 import logo36 from "../assets/To'ramurodov Ulug'bek.jpg";
 import logo37 from "../assets/Akramov Aslbek.jpg";
-// import logo38 from "../assets/photo_2026-01-27_19-09-55.jpg";
-// import logo39 from "../assets/photo_2025-08-30_19-21-11 (3).jpg";
-// import logo40 from "../assets/photo_2025-06-05_12-10-12.jpg";
 
 const images = [
   { name: "Baxtiyor Jalolov", src: logo },
@@ -83,87 +80,201 @@ const images = [
   { name: "Muxtorov Kamronbek", src: logo35 },
   { name: "To'ramurodov Ulug'bek", src: logo36 },
   { name: "Akramov Aslbek", src: logo37 },
-  // { name: "logo38", src: logo38 },
-  // { name: "logo39", src: logo39 },
-  // { name: "logo40", src: logo40 },
+];
+
+// Infinite-loop: clone several items at start and end of the track
+const CLONES = 5; // number of clones at each side
+const extended = [
+  ...images.slice(-CLONES),
+  ...images,
+  ...images.slice(0, CLONES),
 ];
 
 function Gallery() {
-  const [currentIndex] = useState(0);
+  // real index inside `extended` array; starts at CLONES to skip the leading clones
+  const [trackIndex, setTrackIndex] = useState(CLONES);
+  const [animated, setAnimated] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(null);
-  const perPage = 6;
 
-  const visibleImages = images.slice(currentIndex, currentIndex + perPage);
+  // drag/swipe state
+  const [pointerDown, setPointerDown] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [dragDelta, setDragDelta] = useState(0);
 
-  const openModal = (index) => setSelectedIndex(index);
-  const closeModal = () => setSelectedIndex(null);
+  const autoRef = useRef(null);
+  const trackRef = useRef(null);
+  const AUTOPLAY_MS = 3500;
 
-  const nextImage = () => {
-    setSelectedIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  // After CSS transition ends, silently jump back if we hit a clone region
+  const handleTransitionEnd = useCallback(() => {
+    setTrackIndex((idx) => {
+      if (idx >= images.length + CLONES) {
+        setAnimated(false);
+        return CLONES;
+      }
+      if (idx < CLONES) {
+        setAnimated(false);
+        return images.length + CLONES - 1;
+      }
+      return idx;
+    });
+  }, []);
+
+  // Re-enable animation after a silent jump (one rAF later so browser sees the position change)
+  useEffect(() => {
+    if (!animated) {
+      const raf = requestAnimationFrame(() => setAnimated(true));
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [animated]);
+
+  // ------------------------------------------------------------------
+  // Autoplay
+  // ------------------------------------------------------------------
+  const startAutoplay = useCallback(() => {
+    autoRef.current = setInterval(() => {
+      setTrackIndex((prev) => prev + 1);
+      setAnimated(true);
+    }, AUTOPLAY_MS);
+  }, []);
+
+  const stopAutoplay = useCallback(() => {
+    if (autoRef.current) clearInterval(autoRef.current);
+  }, []);
+
+  useEffect(() => {
+    startAutoplay();
+    return () => stopAutoplay();
+  }, [startAutoplay, stopAutoplay]);
+
+  // ------------------------------------------------------------------
+  // Drag / Swipe handlers
+  // ------------------------------------------------------------------
+  const onDragStart = (clientX) => {
+    stopAutoplay();
+    setPointerDown(true);
+    setDragStartX(clientX);
+    setDragDelta(0);
   };
 
-  const prevImage = () => {
-    setSelectedIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const onDragMove = (clientX) => {
+    if (!pointerDown) return;
+    setDragDelta(clientX - dragStartX);
   };
+
+  const onDragEnd = () => {
+    if (!pointerDown) return;
+    setPointerDown(false);
+    if (dragDelta < -60) {
+      setTrackIndex((prev) => prev + 1);
+      setAnimated(true);
+    } else if (dragDelta > 60) {
+      setTrackIndex((prev) => prev - 1);
+      setAnimated(true);
+    }
+    setDragDelta(0);
+    startAutoplay();
+  };
+
+  // Mouse
+  const onMouseDown = (e) => { e.preventDefault(); onDragStart(e.clientX); };
+  const onMouseMove = (e) => onDragMove(e.clientX);
+  const onMouseUp   = () => onDragEnd();
+  const onMouseLeave = () => { if (pointerDown) onDragEnd(); };
+
+  // Touch
+  const onTouchStart = (e) => onDragStart(e.touches[0].clientX);
+  const onTouchMove  = (e) => onDragMove(e.touches[0].clientX);
+  const onTouchEnd   = () => onDragEnd();
+
+  // ------------------------------------------------------------------
+  // Modal
+  // ------------------------------------------------------------------
+  const openModal = (src, name) => {
+    const idx = images.findIndex((img) => img.src === src);
+    if (idx !== -1) setSelectedIndex(idx);
+  };
+  const closeModal   = () => setSelectedIndex(null);
+  const nextModal    = () => setSelectedIndex((p) => (p + 1) % images.length);
+  const prevModal    = () => setSelectedIndex((p) => (p - 1 + images.length) % images.length);
+
+  // ------------------------------------------------------------------
+  // Render
+  // ------------------------------------------------------------------
+  // Each slide occupies (100 / VISIBLE)% of the track wrapper.
+  // We show 3 on desktop, 2 on tablet, 1 on mobile via CSS variable.
+  const slideWidthPercent = `calc(100% / var(--carousel-visible))`;
+  const translateX = `calc(-${trackIndex} * 100% / var(--carousel-visible) + ${pointerDown ? dragDelta : 0}px)`;
 
   return (
     <section className="gallery" id="sertfikatlar">
       <div className="container">
-        <h2 className="gallery-title">
-          O'quvchilar yutuqlari va sertifikatlari
-        </h2>
+        <h2 className="gallery-title">O'quvchilar yutuqlari va sertifikatlari</h2>
         <p className="gallery-text">
           O'quvchilarimiz doimiy ravishda yuqori natijalarga erishmoqda. Mana
           ularning sertifikatlari va mukofotlari
         </p>
 
-        <ul className="gallery-wrapper">
-          {visibleImages.map((img, index) => (
-            <li
-              className="gallery-item"
-              key={index}
-              onClick={() => openModal(index)}
-            >
-              <img src={img.src} alt={img.name} />
-            </li>
-          ))}
-        </ul>
+        {/* ── Carousel ─────────────────────────────────────────── */}
+        <div className="carousel-viewport">
+          <div
+            className="carousel-track"
+            ref={trackRef}
+            style={{
+              transform: `translateX(${translateX})`,
+              transition: animated && !pointerDown
+                ? "transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+                : "none",
+              cursor: pointerDown ? "grabbing" : "grab",
+            }}
+            onTransitionEnd={handleTransitionEnd}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseLeave}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
+            {extended.map((img, i) => (
+              <div
+                className="carousel-slide"
+                key={i}
+                style={{ width: slideWidthPercent }}
+                onClick={() => {
+                  if (Math.abs(dragDelta) < 8) openModal(img.src, img.name);
+                }}
+              >
+                <img
+                  src={img.src}
+                  alt={img.name}
+                  draggable="false"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
 
         <div className="gallery-btn-box">
           <Link to="/gallery-all" className="gallery-more-btn">
-            Yana ko'rish
+            Barchasini ko'rish
           </Link>
         </div>
       </div>
 
+      {/* ── Fullscreen Modal ──────────────────────────────────── */}
       {selectedIndex !== null && (
         <div className="modal" onClick={closeModal}>
-          <button
-            className="prev"
-            onClick={(e) => {
-              e.stopPropagation();
-              prevImage();
-            }}
-          >
-            ‹
-          </button>
-
+          <button className="prev" onClick={(e) => { e.stopPropagation(); prevModal(); }} aria-label="Oldingi">‹</button>
           <img
             src={images[selectedIndex].src}
             alt={images[selectedIndex].name}
             className="modal-img"
             onClick={(e) => e.stopPropagation()}
           />
-
-          <button
-            className="next"
-            onClick={(e) => {
-              e.stopPropagation();
-              nextImage();
-            }}
-          >
-            ›
-          </button>
+          <button className="next" onClick={(e) => { e.stopPropagation(); nextModal(); }} aria-label="Keyingi">›</button>
+          <button className="modal-close" onClick={closeModal} aria-label="Yopish">×</button>
         </div>
       )}
     </section>

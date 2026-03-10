@@ -2,6 +2,11 @@ header {
   width: 100%;
 }
 
+.logo {
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .navbar {
   position: fixed;
   top: 0;

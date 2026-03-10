@@ -45,10 +45,16 @@ function Header() {
       <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
         <div className="nav-container">
 
-          <div className="logo">
+          <Link 
+            to="header" 
+            className="logo" 
+            smooth={true} 
+            duration={500}
+            onClick={() => goHomeAndScroll("header")}
+          >
             <FaGraduationCap className="graduation" />
-            <h1>Muhammad Ortiqov o‘quv markazi</h1>
-          </div>
+            <h1>Muhammad Ortiqov</h1>
+          </Link>
 
           <ul className={`nav-links ${menuOpen ? "active" : ""}`}>
 

@@ -12,6 +12,18 @@ function RegistrationForm() {
 
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".custom-dropdown")) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -118,26 +130,35 @@ Yangi ro'yxatdan o'tish:
 
           <div className="form-group">
             <label>Kurs</label>
-            <select
-              name="course"
-              value={formData.course}
-              onChange={handleChange}
-              required
-            >
-              <option value="" disabled>
-                Kursni tanlang
-              </option>
-              <option value="Universitetga kirishga tayyorgarlik">
-                Universitetga kirishga tayyorgarlik
-              </option>
-              <option value="Milliy sertifikat tayyorlash">
-                Milliy sertifikat tayyorlash
-              </option>
-              <option value="Olimpiadaga tayyorgarlik">
-                Olimpiadaga tayyorgarlik
-              </option>
-              <option value="IT bo‘yicha kurslar">IT bo‘yicha kurslar</option>
-            </select>
+            <div className={`custom-dropdown ${formData.course ? "" : "placeholder-active"}`}>
+              <div 
+                className="dropdown-selected" 
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                {formData.course || "Kursni tanlang"}
+                <span className={`dropdown-arrow ${dropdownOpen ? "open" : ""}`}></span>
+              </div>
+              {dropdownOpen && (
+                <ul className="dropdown-options">
+                  {[
+                    "Universitetga kirishga tayyorgarlik",
+                    "Milliy sertifikat tayyorlash",
+                    "Olimpiadaga tayyorgarlik",
+                    "IT bo‘yicha kurslar"
+                  ].map((option) => (
+                    <li 
+                      key={option} 
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, course: option }));
+                        setDropdownOpen(false);
+                      }}
+                    >
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
 
           <div className="form-group">

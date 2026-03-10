@@ -1,197 +1,163 @@
+/* ── Gallery Section ─────────────────────────────────────── */
 .gallery {
-    width: 100%;
-    margin-top: 60px;
+  width: 100%;
+  margin-top: 60px;
 }
 
 .gallery-title {
-    text-align: center;
-    font-size: 40px;
-    font-weight: 600;
-}
-
-.gallery-text{
-    text-align: center;
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--black);
-    margin-top: 20px;
-}
-
-.gallery-wrapper {
-    margin-top: 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 30px;
-}
-
-.gallery-item {
-    width: 30%;
-    border-radius: 15px;
-    transition: 0.5s all;
-}
-
-.gallery-item img {
-    width: 100%;
-    max-height: 70vh;
-    object-fit: cover;
-    display: block;
-    transition: 0.5s all;
-}
-
-.gallery-item:hover {
-    transform: translateY(-5px);
-}
-
-.gallery-item:hover img {
-    transform: scale(1.03);
-}
-
-.gallery-btn-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10%;
-    margin-top: 40px;
-}
-
-.gallery-btn-box button {
-    padding: 10px 40px;
-    border-radius: 30px;
-    border: none;
-    background: var(--blue);
-    color: var(--white);
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.5s;
-}
-
-.gallery-btn-box button:hover {
-    background: var(--buttonhover);
-}
-
-.gallery-btn-box{
   text-align: center;
-  margin-top: 40px;
+  font-size: 40px;
+  font-weight: 600;
 }
 
-.gallery-more-btn{
+.gallery-text {
+  text-align: center;
+  font-size: 18px;
+  color: var(--black);
+  margin-top: 16px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* ── Carousel CSS variable for responsive visible count ─── */
+:root {
+  --carousel-visible: 5;
+}
+@media (max-width: 1150px) {
+  :root { --carousel-visible: 4; }
+}
+
+@media (max-width: 992px) {
+  :root { --carousel-visible: 3; }
+}
+
+@media (max-width: 768px) {
+  :root { --carousel-visible: 2; }
+}
+
+@media (max-width: 500px) {
+  :root { --carousel-visible: 1; }
+}
+
+/* ── Viewport: clips the overflowing slides ──────────────── */
+.carousel-viewport {
+  margin-top: 40px;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* ── Track: all slides in one row, no wrap ───────────────── */
+.carousel-track {
+  display: flex;
+  will-change: transform;
+  user-select: none;
+}
+
+/* ── Single slide ────────────────────────────────────────── */
+.carousel-slide {
+  flex-shrink: 0;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 380px;
+  /* object-fit: contain; */
+  display: block;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+/* @media (max-width: 992px) {
+  .carousel-slide img { height: 280px; }
+}
+
+@media (max-width: 600px) {
+  .carousel-slide img { height: 320px; }
+} */
+
+/* ── "See all" button ────────────────────────────────────── */
+.gallery-btn-box {
+  text-align: center;
+  margin-top: 36px;
+}
+
+.gallery-more-btn {
   display: inline-block;
   padding: 10px 40px;
   background: var(--blue);
-  color: var(--white);
+  color: #fff;
   border-radius: 20px;
   text-decoration: none;
   font-weight: 500;
-  transition: 0.3s;
+  transition: background 0.3s, transform 0.3s;
 }
 
-.gallery-more-btn:hover{
+.gallery-more-btn:hover {
   background: var(--buttonhover);
   transform: translateY(-3px);
 }
 
-.gallery-wrapper {
-  transition: opacity 0.6s ease-in-out;
-  opacity: 1;
-}
-
-.gallery-wrapper.fading {
-  opacity: 0;
-}
-
-.gallery-item img {
-  transition: transform 0.5s ease, opacity 0.5s ease;
-}
-
-.gallery-wrapper:not(.fading) .gallery-item img {
-  transform: scale(1);
-  opacity: 1;
-}
-
-.gallery-wrapper.fading .gallery-item img {
-  transform: scale(0.98);
-  opacity: 0.7;
-}
-
+/* ── Fullscreen Modal ────────────────────────────────────── */
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.8);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 10px;
 }
-
 
 .modal-img {
-  max-width: 90%;
-  max-height: 80%;
+  max-width: 88%;
+  max-height: 85vh;
   border-radius: 10px;
-  box-shadow: 0 0 25px rgba(0,0,0,0.7);
+  object-fit: contain;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
 }
 
-.prev,
-.next {
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  font-size: 32px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.modal-close:hover { background: rgba(255, 255, 255, 0.3); }
+
+.prev, .next {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255,255,255,0.8);
+  background: rgba(255, 255, 255, 0.85);
   border: none;
   font-size: 2rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
 .prev { left: 20px; }
 .next { right: 20px; }
-
-.prev:hover,
-.next:hover { background-color: rgba(255,255,255,1); }
-
-@media (max-width: 480px) {
-  .modal-img {
-    max-width: 95%;
-    max-height: 70%;
-  }
-
-  .prev, .next {
-    font-size: 1.5rem;
-    padding: 0.4rem 0.8rem;
-  }
-}
-
-@media (max-width: 992px) {
-    .gallery-wrapper {
-        display: flex;
-        justify-content: space-between;
-    }
-    .gallery-item{
-        width: 45%;
-    }
-}
-
-@media (max-width: 600px) {
-    .gallery-wrapper {
-        display: flex;
-        justify-content: center;
-    }
-
-    .gallery-item{
-        width: 40%;
-        height: auto;
-    }
-
-    .gallery-title {
-        font-size: 28px;
-    }
-    .gallery-text{
-        font-size: 17px;
-    }
-}
+.prev:hover, .next:hover { background: #fff; }
