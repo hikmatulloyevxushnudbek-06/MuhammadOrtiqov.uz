@@ -240,7 +240,7 @@ function Gallery() {
 
         <div className="gallery-btn-box">
           <Link 
-            to="/gallery-all" 
+            to="/sertfikatlar" 
             className="gallery-more-btn"
             title="Barcha matematika sertifikatlarini ko'rish"
           >

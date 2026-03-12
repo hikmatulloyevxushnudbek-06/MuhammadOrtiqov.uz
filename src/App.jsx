@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 
-
 import Header from "./header/header.jsx";
 import Hero from "./hero/hero.jsx";
 import Section1 from "./section1/section1.jsx";
@@ -38,7 +37,7 @@ function App() {
           }
         />
 
-        <Route path="/gallery-all" element={<GalleryAll />} />
+        <Route path="/sertfikatlar" element={<GalleryAll />} />
 
       </Routes>
 
