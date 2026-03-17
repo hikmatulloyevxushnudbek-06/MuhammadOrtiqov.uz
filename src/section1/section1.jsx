@@ -38,7 +38,7 @@ function section1() {
               Milliy matematika bo'yicha attestatsiya imtihonlariga yuqori
               o'tish stavkalari bilan maqsadli tayyorgarlik.
             </p>
-            <p>⏱ 2–3 yil</p>
+            <p>⏱ 1–2 yil</p>
             <button><Link to="data" smooth={true} duration={500}>Ma’lumot olish</Link></button>
           </li>
           <li className="course-list-item">
