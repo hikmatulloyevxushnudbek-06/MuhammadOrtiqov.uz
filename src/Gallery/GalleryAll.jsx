@@ -1,184 +1,146 @@
 import React, { useState, useEffect, useRef } from "react";
-import { images } from "./Gallery";
+import { images as staticImages } from "../Gallery/Gallery"; 
 import "./GalleryAll.css";
 import { FiSearch } from "react-icons/fi";
+import { db } from "../firebaseConfig";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+
+// Darajalar tartibi (Mantiqiy ketma-ketlik uchun)
+const gradeOrder = ["A+", "A", "B+", "B", "C+", "C"];
 
 function GalleryAll() {
+  const [allImages, setAllImages] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedGrade, setSelectedGrade] = useState("All"); 
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
-
   const titleRef = useRef(null);
 
-  useEffect(() => {
-    document.title = "Barcha sertifikatlar | Muhammad Ortiqov o'quv markazi";
+  const grades = ["All", "A+", "A", "B+", "B", "C+", "C"];
 
-    return () => {
-      document.title = "Muhammad Ortiqov o'quv markazi";
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const q = query(collection(db, "images"), orderBy("createdAt", "desc"));
+        const snap = await getDocs(q);
+        const firebaseImgs = snap.docs.map(doc => ({
+          name: doc.data().name || "",
+          src: doc.data().url,
+          grade: doc.data().grade || "C",
+          createdAt: doc.data().createdAt?.toDate() || new Date(0)
+        }));
+        
+        const updatedStatic = staticImages.map(img => ({
+          ...img, 
+          grade: img.grade || "C",
+          createdAt: new Date(0)
+        }));
+        
+        const combined = [...firebaseImgs, ...updatedStatic];
+
+        // QAT'IY TARTIBLASH (A+ -> A -> B+ ...)
+        const finalSorted = combined.sort((a, b) => {
+          const indexA = gradeOrder.indexOf(a.grade);
+          const indexB = gradeOrder.indexOf(b.grade);
+          
+          if (indexA !== indexB) {
+            return indexA - indexB; 
+          }
+          return b.createdAt - a.createdAt;
+        });
+
+        setAllImages(finalSorted);
+      } catch (err) {
+        console.error("Xatolik:", err);
+        setAllImages(staticImages);
+      }
     };
+    loadData();
   }, []);
 
-  useEffect(() => {
-    if (titleRef.current) {
-      titleRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search]);
-
-  useEffect(() => {
-    if (titleRef.current) {
-      titleRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, [currentPage]);
-
-  const filteredImages = images.filter((img) =>
-    img.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredImages = allImages.filter((img) => {
+    const matchesSearch = img.name.toLowerCase().includes(search.toLowerCase());
+    const matchesGrade = selectedGrade === "All" || img.grade === selectedGrade;
+    return matchesSearch && matchesGrade;
+  });
 
   const totalPages = Math.ceil(filteredImages.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentImages = filteredImages.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const openModal = (indexInCurrentPage) => {
-    const indexInFiltered = indexOfFirstItem + indexInCurrentPage;
-    setSelectedIndex(indexInFiltered);
-  };
-
-  const closeModal = () => setSelectedIndex(null);
-
-  const nextImage = (e) => {
-    e.stopPropagation();
-    setSelectedIndex((prev) =>
-      prev === filteredImages.length - 1 ? 0 : prev + 1
-    );
-  };
-
-  const prevImage = (e) => {
-    e.stopPropagation();
-    setSelectedIndex((prev) =>
-      prev === 0 ? filteredImages.length - 1 : prev - 1
-    );
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    titleRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <section className="gallery-all">
       <div className="container">
-        <h2 className="gallery-all-title" ref={titleRef}>
-          Barcha sertifikatlar
-        </h2>
-
-        <p className="gallery-subtitle">
-          O'quvchilarimizning barcha sertifikatlari va yutuqlari shu yerda
-        </p>
+        <h2 className="gallery-all-title" ref={titleRef}>Barcha sertifikatlar</h2>
+        
+        <div className="grade-filter">
+          {grades.map((g) => (
+            <button
+              key={g}
+              onClick={() => { setSelectedGrade(g); setCurrentPage(1); }}
+              className={`grade-btn ${selectedGrade === g ? "active" : ""}`}
+            >
+              {g}
+            </button>
+          ))}
+        </div>
 
         <div className="gallery-all-inp">
           <div className="search-wrapper">
-            <FiSearch className="search-icon" aria-hidden="true" />
+            <FiSearch className="search-icon" />
             <input
               type="text"
-              placeholder="Qidiring..."
+              placeholder="Sertifikat nomini yozing..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
               className="gallery-search"
-              aria-label="Sertifikatlar bo'yicha qidiruv"
             />
           </div>
         </div>
 
         <div className="gallery-grid">
-          {currentImages.map((img, index) => (
-            <img
-              key={index}
-              src={img.src}
-              alt={img.name}
-              onClick={() => openModal(index)}
-              loading="lazy"
-              className="gallery-image"
-            />
-          ))}
+          {currentImages.length > 0 ? (
+            currentImages.map((img, index) => (
+              <div key={index} className="gallery-card" onClick={() => setSelectedIndex(indexOfFirstItem + index)}>
+                {/* FAQAT RASM - hamma ortiqcha yozuvlar (grade, name) olib tashlandi */}
+                <img src={img.src} alt="sertifikat" loading="lazy" />
+              </div>
+            ))
+          ) : (
+            <p className="no-results">Hech narsa topilmadi...</p>
+          )}
         </div>
 
-        {filteredImages.length > itemsPerPage && (
+        {totalPages > 1 && (
           <div className="pagination">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="pagination-btn"
-            >
-              &laquo;
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => (
+            <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="pagination-btn arrow"> « </button>
+            {[...Array(totalPages)].map((_, i) => (
               <button
-                key={i + 1}
+                key={i}
                 onClick={() => paginate(i + 1)}
-                className={`pagination-btn ${
-                  currentPage === i + 1 ? "active" : ""
-                }`}
+                className={`pagination-btn ${currentPage === i + 1 ? "active" : ""}`}
               >
                 {i + 1}
               </button>
             ))}
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="pagination-btn"
-            >
-              &raquo;
-            </button>
+            <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages} className="pagination-btn arrow"> » </button>
           </div>
-        )}
-
-        {filteredImages.length === 0 && search && (
-          <p className="no-results">Hech qanday sertifikat topilmadi :(</p>
         )}
       </div>
 
       {selectedIndex !== null && (
-        <div className="modal" onClick={closeModal}>
-          <button
-            className="prev"
-            onClick={prevImage}
-            aria-label="Oldingi rasm"
-          >
-            ‹
-          </button>
-
-          <img
-            src={filteredImages[selectedIndex].src}
-            alt={filteredImages[selectedIndex].name}
-            className="modal-img"
-            onClick={(e) => e.stopPropagation()}
-            loading="lazy"
-          />
-
-          <button
-            className="next"
-            onClick={nextImage}
-            aria-label="Keyingi rasm"
-          >
-            ›
-          </button>
-
-          <button
-            className="modal-close"
-            onClick={closeModal}
-            aria-label="Modalni yopish"
-          >
-            ×
-          </button>
+        <div className="modal" onClick={() => setSelectedIndex(null)}>
+          <button className="prev" onClick={(e) => { e.stopPropagation(); setSelectedIndex((p) => (p - 1 + filteredImages.length) % filteredImages.length); }}>‹</button>
+          <img src={filteredImages[selectedIndex].src} className="modal-img" alt="zoom" onClick={(e) => e.stopPropagation()} />
+          <button className="next" onClick={(e) => { e.stopPropagation(); setSelectedIndex((p) => (p + 1) % filteredImages.length); }}>›</button>
+          <button className="modal-close">×</button>
         </div>
       )}
     </section>

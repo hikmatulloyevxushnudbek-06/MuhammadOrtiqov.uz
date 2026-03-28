@@ -66,6 +66,63 @@
   cursor: pointer;
 }
 
+/* Darajalar bo'yicha saralash tugmalari (Grade Filter) */
+.grade-filter {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.grade-btn {
+  padding: 8px 18px;
+  border: 1px solid #ddd;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  border-radius: 4px; /* Rasmda ko'rsatilganidek kvadratroq shakl */
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.grade-btn:hover {
+  background-color: #f9f9f9;
+  border-color: #bbb;
+}
+
+.grade-btn.active {
+  background-color: #f1f1f1; /* Paginatsiya bilan bir xil uslub */
+  border-color: #333;
+  font-weight: bold;
+}
+
+/* Rasm burchagidagi Grade belgisini yashirish (Agar kodingizda qolgan bo'lsa) */
+.grade-badge {
+  display: none;
+}
+
+/* Paginatsiya tugmalarini siz yuborgan rasmga moslash */
+.pagination-btn {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #ccc;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  border-radius: 0px; /* To'liq kvadrat shakl uchun */
+}
+
+.pagination-btn.active {
+  background: #f1f1f1;
+  border-color: #666;
+  color: #000;
+  font-weight: bold;
+}
+
 .gallery-grid img:hover {
   transform: scale(1.02);
 }
