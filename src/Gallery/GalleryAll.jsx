@@ -108,19 +108,31 @@ function GalleryAll() {
         <div className="gallery-grid">
           {currentImages.length > 0 ? (
             currentImages.map((img, index) => (
-              <div key={index} className="gallery-card" onClick={() => setSelectedIndex(indexOfFirstItem + index)}>
+              <div 
+                key={index} 
+                className="gallery-card" 
+                onClick={() => setSelectedIndex(indexOfFirstItem + index)}
+              >
                 {/* FAQAT RASM - hamma ortiqcha yozuvlar (grade, name) olib tashlandi */}
-                <img src={img.src} alt="sertifikat" loading="lazy" />
+                <img src={img.src} alt="sertifikat" loading="lazy" className="gallery-img" />
               </div>
             ))
           ) : (
-            <p className="no-results">Hech narsa topilmadi...</p>
+            <div className="no-results-wrapper">
+              <p className="no-results">Hech qanday sertifikat topilmadi</p>
+            </div>
           )}
         </div>
 
         {totalPages > 1 && (
           <div className="pagination">
-            <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="pagination-btn arrow"> « </button>
+            <button 
+              onClick={() => paginate(currentPage - 1)} 
+              disabled={currentPage === 1} 
+              className="pagination-btn arrow"
+            > 
+              « 
+            </button>
             {[...Array(totalPages)].map((_, i) => (
               <button
                 key={i}
@@ -130,7 +142,13 @@ function GalleryAll() {
                 {i + 1}
               </button>
             ))}
-            <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages} className="pagination-btn arrow"> » </button>
+            <button 
+              onClick={() => paginate(currentPage + 1)} 
+              disabled={currentPage === totalPages} 
+              className="pagination-btn arrow"
+            > 
+              » 
+            </button>
           </div>
         )}
       </div>
